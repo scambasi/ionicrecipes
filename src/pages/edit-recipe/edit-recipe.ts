@@ -3,6 +3,7 @@ import { IonicPage, NavController, NavParams, ActionSheetController, AlertContro
 import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
 import { formGroupNameProvider } from '@angular/forms/src/directives/reactive_directives/form_group_name';
 import { RecipeServices } from '../../services/recipes';
+import { Recipe } from '../../modals/recipe';
 
 @IonicPage()
 @Component({
@@ -13,6 +14,8 @@ export class EditRecipePage implements OnInit{
   mode='Ekle';
   selectOptions=['Kolay','Normal','Zor'];
   recipeForm:FormGroup;
+  recipe:Recipe;
+  index:number;
   constructor(public navCtrl: NavController, public navParams: NavParams,
     private actionSheetCtrl:ActionSheetController,private alertCtrl:AlertController,
     private toastCtrl:ToastController,
@@ -30,14 +33,26 @@ export class EditRecipePage implements OnInit{
       })
 
     }
+    if(this.mode=='Güncelle')
+    {
+      this.recipeServices.updateRecipe(this.index,value.title,value.description,
+        value.difficulty,ingredients);
+    }else{
     this.recipeServices.addRecipe(value.title,value.description,
       value.difficulty,ingredients);
+    }
       this.recipeForm.reset();
       this.navCtrl.popToRoot();
   }
   ngOnInit()
   {
     this.mode=this.navParams.get('mode');
+    if(this.mode=='Güncelle')
+    {
+      this.recipe=this.navParams.get('recipe');
+      this.index=this.navParams.get('index');
+    }
+
     this.initializeForm();
   }
   onManageIngredients()
@@ -128,11 +143,25 @@ export class EditRecipePage implements OnInit{
   }
   private initializeForm()
   {
+    let title=null;
+    let description=null;
+    let difficulty='Normal';
+    let ingredients=[];
+    if(this.mode=='Güncelle')
+    {
+      title=this.recipe.title;
+      description=this.recipe.description;
+      difficulty=this.recipe.difficulty;
+      for(let ingredient of this.recipe.ingredients)
+      {
+        ingredients.push(new FormControl(ingredient.name,Validators.required));
+      }
+    } 
     this.recipeForm=new FormGroup({
-      'title':new FormControl(null,Validators.required),
-      'description':new FormControl(null,Validators.required),
+      'title':new FormControl(title,Validators.required),
+      'description':new FormControl(description,Validators.required),
       'difficulty':new FormControl('Normal',Validators.required),
-      'ingredients':new FormArray([])
+      'ingredients':new FormArray(ingredients)
     });
   }
 }

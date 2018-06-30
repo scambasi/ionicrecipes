@@ -10,7 +10,7 @@ export class RecipeServices
         ingredients:Ingredient[])
     {
         this.recipes.push(new Recipe(title,description,difficulty,ingredients));
-        console.log(this.recipes);
+        console.log('added',this.recipes);
     }
     getRecipes()
     {
@@ -21,6 +21,7 @@ export class RecipeServices
         ingredients:Ingredient[])
     {
             this.recipes[index]=new Recipe(title,description,difficulty,ingredients);
+            console.log('updated',this.recipes);
     }
     removeRecipe(index:number)
     {
