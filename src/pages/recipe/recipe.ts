@@ -24,6 +24,7 @@ export class RecipePage implements OnInit {
   {
    this.recipe=this.navParams.get('recipe');
    this.index=this.navParams.get('index'); 
+   console.log(this.recipe);
   }
   onEditRecipe()
   {
