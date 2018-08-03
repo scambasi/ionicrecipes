@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
-import { IonicPage, LoadingController, AlertCmp, AlertController } from 'ionic-angular';
+import { IonicPage, LoadingController, AlertCmp, AlertController, NavController } from 'ionic-angular';
 import { NgForm } from '@angular/forms';
 import { AuthService } from '../../services/AuthService';
+import { TabsPage } from '../tabs/tabs';
 
 
 @IonicPage()
@@ -12,7 +13,8 @@ import { AuthService } from '../../services/AuthService';
 export class SigninPage {
   constructor(private authService:AuthService,
     private loadingCtrl:LoadingController,
-    private alertCtrl:AlertController)
+    private alertCtrl:AlertController,
+    private navCtrl:NavController)
   {
 
   }
@@ -27,6 +29,7 @@ export class SigninPage {
     loading.present();
     this.authService.signin(form.value.email,form.value.password)
     .then(data=>{
+      this.navCtrl.push(TabsPage);
      loading.dismiss();
 
     }).catch(error=>

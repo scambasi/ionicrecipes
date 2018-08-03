@@ -7,7 +7,7 @@ import { TabsPage } from '../pages/tabs/tabs';
 import { SigninPage } from '../pages/signin/signin';
 import { SignupPage } from '../pages/signup/signup';
 
-import firabase from 'firebase';
+import Parse from 'parse';
 import { AuthService } from '../services/AuthService';
 
 
@@ -25,30 +25,32 @@ export class MyApp {
     statusBar: StatusBar, splashScreen: SplashScreen,
     private menuCtrl:MenuController,
     private authSrvCtrl:AuthService) {
-  firabase.initializeApp(
-    {
+      console.log('APP.COMPONENT')
+  // firabase.initializeApp(
+  //   {
       
-      apiKey: "AIzaSyAmXqbbPnFytefF7yuzMV7gkR9ZgaByxIo",
-      authDomain: "yemektariflerim-e8ca5.firebaseapp.com"
+  //     apiKey: "AIzaSyAmXqbbPnFytefF7yuzMV7gkR9ZgaByxIo",
+  //     authDomain: "yemektariflerim-e8ca5.firebaseapp.com"
     
-    }
-  );
-  firabase.auth().onAuthStateChanged(
-    user=>
-    {
-      if(user)
-      {
-        this.isAuthenticated=true;
-       this.rootPage=TabsPage;
-
-      }else
-      {
-        this.isAuthenticated=false;
+  //   }
+  // );
+  Parse.serverURL = 'https://parseapi.back4app.com/';
+  Parse.initialize("1PDfxOZaIcldS56Ue0tagvjq98GGyaRK7ptOtbZN", "4sRePMpTCmRs2cxOPf1WsOeIyHUVsXBzF7RdnQNu");
+   if(authSrvCtrl.onAuthStateChanged())
+   {
+      console.log('BAŞARILI');
+      this.isAuthenticated=true;
+      this.rootPage=TabsPage;
+       
+   }
+   else
+   {
+        console.log('BAŞARISIZ');
+        this.isAuthenticated=false; 
         this.rootPage=SigninPage;
-      }
-    }
-  );
-
+       
+    
+   }
     platform.ready().then(() =>
     {
       statusBar.styleDefault();

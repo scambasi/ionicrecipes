@@ -42,6 +42,7 @@ export class ShoppingListPage {
   {
     this.listItems=this.slService.getItems();
   } 
+  
   onShowOptions(event: MouseEvent) {
     const loading = this.loadingCtrl.create({
       content: 'Lütfen Bekleyiniz...'
@@ -55,41 +56,31 @@ export class ShoppingListPage {
         }
         if (data.action == 'load') {
           loading.present();
-          this.authService.getActiveUser().getIdToken()
-            .then(
-              (token: string) => {
-                this.slService.fetchList(token)
-                  .subscribe(
-                    (list: any) => {
-                      loading.dismiss();
-                      if (list) {
-                        this.listItems = list;
-                      } else {
-                        this.listItems = [];
-                      }
-                    },
-                    error => {
-                      loading.dismiss();
-                      this.handleError(error.message);
-                    }
-                  );
-              }
-            );
+          let offset = this.listItems.length;
+          let limit = 10;
+          return this.slService.getAlisverisListesi(offset, limit).then((result) => {
+            for (let i = 0; i < result.length; i++) {
+              let object = result[i];
+              console.log('adi:'+object.get('adi'));
+           
+              this.listItems.push(new Ingredient(object.get('adi'),object.get('miktari')));
+              
+            }
+            console.log(result);
+            loading.dismiss();
+          }, (error) => {
+            console.log(error);
+            this.handleError(error.message);
+      });
         } else if (data.action == 'store') {
           loading.present();
-          this.authService.getActiveUser().getIdToken()
-            .then(
-              (token: string) => {
-                this.slService.storeList(token)
-                  .subscribe(
-                    () => loading.dismiss(),
-                    error => {
-                      loading.dismiss();
-                      this.handleError(error.message);
-                    }
-                  );
-              }
-            );
+          this.slService.addAlisverisListesi().then((alisverisList) => {
+          this.listItems.push(alisverisList);
+          loading.dismiss();
+        }, (error) => {
+          console.log(error);
+          this.handleError(error.message);
+        });
         }
       }
     );

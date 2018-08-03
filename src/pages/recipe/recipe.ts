@@ -38,7 +38,7 @@ export class RecipePage implements OnInit {
   }
   onDeleteRecipe()
   {
-    this.recipeService.removeRecipe(this.index);
+    this.recipeService.removeRecipe(this.index,this.recipe.title);
     this.navCtrl.popToRoot();
   }
 }
